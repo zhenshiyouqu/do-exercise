@@ -1,0 +1,67 @@
+leetcode316. 去除重复字母，字符串去重，最小字典序
+题目描述：
+给你一个仅包含小写字母的字符串，请你去除字符串中重复的字母，使得每个字母只出现一次。需保证返回结果的字典序最小（要求不能打乱其他字符的相对位置）。
+示例 1:
+输入: "bcabc"
+输出: "abc"
+示例 2:
+输入: "cbacdcbc"
+输出: "acdb"
+
+1.知识点：数据结构：重复与去重就应该想到hashset，和hashmap如果不能用额外空间应该想到双指针
+                    顺序相关的应该想到stack栈
+                    这种题如果想要遍历和枚举应该是不现实的，太过于繁杂，简单点先用贪心算法试试
+          贪心算法：贪心算法（又称贪婪算法）是指，在对问题求解时，总是做出在当前看来是最好的选择。
+                    也就是说，不从整体最优上加以考虑，他所做出的是在某种意义上的局部最优解。
+2.基本贪心算法思想：遍历所有字符，1.判定这个字符是否出现过，若没有先放入stack第一个字符，然后遍历从后面开始的字符
+                                 2.如果这个字符比前一个字符要小，则检查前一个字符，若前一个字符在后面还会出现，则将前一个字符pop出栈
+                                 再放入现在的字符，并且只要栈还有值，则一直重复这个流程检查，直到不符合要求
+                                 3.放入现在的字符
+3.代码实现
+public String removeDuplicateLetters(String s) {
+        //用到的数据结构：
+        // 栈用来存放最后的结果，
+        // hashmap用来存放每个字母出现的次数，
+        // set用来存放不重复的字母
+        Stack<Character> stack=new Stack<>();
+        Map<Character,Integer> map=new HashMap<>();
+        Set<Character> set=new HashSet<>();
+        for(Character c : s.toCharArray()) {
+            map.put(c, map.getOrDefault(c, 0) + 1);
+           // System.out.println(c+":"+map.get(c));
+
+        }
+        for(Character c : s.toCharArray() )
+        //for (int i=0 ; i<s.length() ; i++)
+        {
+           // Character c = s.charAt(i);
+            if (!set.contains(c))
+            {
+                //这里的判定是一个难点,并且判断是否为空要在peek之前
+                //并且我们判定的是stack栈中前一个字符与现在所遍历到的字符的关系，并且判定前一个字符是否重复
+                //并且这个判定一直持续到否为止，这时贪心算法的关键
+                while ( !stack.isEmpty() && stack.peek() > c && map.get(stack.peek()) >= 1)
+                {
+                //这里是删除和出栈前一个字符
+                    set.remove(stack.peek());
+                    stack.pop();
+                }
+                stack.push(c);
+                set.add(c);
+            }
+            //在这里，会一直把当前遍历的字符在map中的个数减去1操作
+            map.put(c,map.get(c)-1);
+            
+        }
+        //这里说一下stringbuilder和stringbuffer的区别
+        //和 String 类不同的是，StringBuffer 和 StringBuilder 类的对象能够被多次的修改，并且不产生新的未使用对象。
+         // StringBuilder 类在 Java 5 中被提出，
+        //它和 StringBuffer 之间的最大不同在于 StringBuilder 的方法不是线程安全的（不能同步访问）。
+//由于 StringBuilder 相较于 StringBuffer 有速度优势，所以多数情况下建议使用 StringBuilder 类。
+//然而在应用程序要求线程安全的情况下，则必须使用 StringBuffer 类。
+        StringBuilder stringBuilder=new StringBuilder();
+        while ( !stack.isEmpty() ) stringBuilder.append(stack.pop());
+        stringBuilder.reverse();
+        return stringBuilder.toString();
+    }
+
