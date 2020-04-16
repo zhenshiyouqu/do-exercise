@@ -1,0 +1,72 @@
+知识点：双指针，hashset,hashmap
+1.题目描述：给定一个字符串，请你找出其中不含有重复字符的 最长子串 的长度。
+
+示例 1:
+
+输入: "abcabcbb"
+输出: 3 
+解释: 因为无重复字符的最长子串是 "abc"，所以其长度为 3。
+示例 2:
+
+输入: "bbbbb"
+输出: 1
+解释: 因为无重复字符的最长子串是 "b"，所以其长度为 1。
+示例 3:
+
+输入: "pwwkew"
+输出: 3
+解释: 因为无重复字符的最长子串是 "wke"，所以其长度为 3。
+     请注意，你的答案必须是 子串 的长度，"pwke" 是一个子序列，不是子串。
+2思考方式：a.看到关于重复，就应该想到set以及map的数据结构
+          b.看到子串，就应该想到用双指针来代表首尾，或者用滑动窗口来代表子串
+      
+      
+3解题
+解法一：双指针加set
+    public int lengthOfLongestSubstring(String s) {
+        if (s.length() == 0 || s==null) return 0;
+        int max = Integer.MIN_VALUE;
+        Set<Character> set = new HashSet<>();
+        for (int i=0 ; i<s.length() ; i++)
+        {
+            for(int j=i ; j<s.length() ; j++)
+            {
+                if ( set.contains(s.charAt(j)) )
+                {
+                    set.clear();
+                    break;
+                }
+                else
+                {
+                    set.add( s.charAt(j) );
+                    max = Math.max( max , j-i+1);
+                }
+            }
+        }
+        return max;
+    }
+解法二：
+    public int lengthOfLongestSubstring(String s) {
+        if (s.length() == 0 || s==null) return 0;
+        int max = Integer.MIN_VALUE;
+        Set<Character> set = new HashSet<>();
+        int i=0,j=0;
+        //因为重复的字符一定是出现在首尾，所以可以对首尾的指针进行加减
+        while (i<s.length() && j<s.length())
+        {
+            if ( !set.contains( s.charAt(j) ) )
+            {
+                set.add( s.charAt(j) );//如果没有则添加，并且把j++
+                j++;
+            }
+            else
+            {
+                set.remove( s.charAt(i) );//如果首部出现了重复，则跟他重复的一定在尾部，则可以将尾部删掉，并i++
+                i++;
+            }
+            //这里需要注意，到底是j-i还是j-i+1可能需要试验几次，这里需要注意的是j指向的字符到底有没有判定
+            max = Math.max( max , j-i );
+        }
+        return max;
+    }
+4.易错点，在j-i处容易出错，注意j是即将要检查的字符还是已经检查的字符
