@@ -1,0 +1,32 @@
+1.题目描述
+给定一个链表，两两交换其中相邻的节点，并返回交换后的链表。
+
+你不能只是单纯的改变节点内部的值，而是需要实际的进行节点交换。
+示例:
+给定 1->2->3->4, 你应该返回 2->1->4->3.
+2.思考：其实这道题有两种方式，递归和迭代
+这里只介绍迭代，因为实在是没必要递归
+思路：新增两个节点，进行互相交换
+3.java代码
+    public ListNode swapPairs(ListNode head) {
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+        ListNode first;
+        ListNode second ;
+        ListNode cunrrent = dummy;
+        //要检查是否为空，为空则说明无法满足两个都能交换的条件
+        while ( cunrrent.next!=null && cunrrent.next.next!=null )
+        {
+            //分别定义为第一个和第二个
+            first=cunrrent.next;
+            second=cunrrent.next.next;
+            //这里是交换的方式，要交换两个节点，需要用到两个节点的前后节点
+            //也就是四个节点，需要三行代码
+            first.next = second.next;
+            second.next = first;
+            cunrrent.next = second;
+            //指针加2
+            cunrrent=cunrrent.next.next;
+        }
+        return dummy.next;
+    }
