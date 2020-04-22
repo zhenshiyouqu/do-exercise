@@ -1,0 +1,160 @@
+/**
+ * 思路写一下
+ * 1.给一长篇的小说，利用正则表达式将小说分为无数的字符串
+ * 2.将从后到前字符串切割，最长为n，否则一句话太长
+ * 3.并且将每一个字符串的末尾音节提取出来，普通的韵脚音的话放在一个字符数组里面
+ * 3.增加一个hashmap表，添加平时用的韵脚
+ * 4.将符合hashmap的韵脚放在字典里
+ * 5.规定歌词的格式，比如**，*****，随机从字典取出字符串并做切割处理，放入一个stringbuilder钟
+ * 6.通过扬声器播放
+ */
+public class leetcode {
+    public static String[] yunmubiao = {"a","o","e","i","u","v","ai","ei","ui","ao","ou","iu","ie","ve","er","an","en","in","un","ang","eng","ing","ong"};
+    public static String sss= "飞燕步、归元舞、百烈佛腿、神梦爪、黑虎隐、皇刀、逆天佛吟、究极劈、琉光掌、无华法、封穴解、凄煌圣印、白光斧、极霸法、魔舞、金钟龙杀、腾蛇皇斩、玄冰腿、妖灵舞、地煞爪、兽皇鬼枪、净心杀、无想步、金光手、圣火圣隐、白焰雷、无痕霸指、蚀精妖指、飞花术、不败佛指、梅花霸闪、虎牙舞、星风圣斩、烈火杀、爆碎鬼吟、长虹解、青虎瘴、菩提霸解、霸王神斩\n" +
+            "\n" +
+            "金童龙封、光龙隐、混元术、世尊瘴、烈风爪、天悲解、蜘蛛神法、九泉妖破、阿含法、战豹斧、落枫鬼刀、火蚕隐、渡业瘴、紫凰腿、金蚕瘴、螳螂魔斩、冲霄掌、四合印、生死术、银羽步、蛤蟆佛吟、销魂圣咒、无情劲、万象佛杀、巨鲨皇步、逆天爆、雷风变、圣儒闪、太虚神轰、飞沙圣破、赤羽闪、青羽神斧、拾伍爆、老阳劲、法性咒、明心爪、琉璃术、天雷腿、太乙杀、虎尾咒、螳螂吟、银翼妖劈、黄虎劲、辟心霸步、斩月妖爆\n" +
+            "\n" +
+            "天道劈、缠丝霸解、夺魂斧、断脉龙雷、真空圣步、天极吟、摧山法、闼婆闪、腾蛇劈、达摩掌、万丈吟、阴鬼刀、圆融魔爆、百八雷、仙破、玄冰瘴、修罗杀、狼王指、无垢封、桃花妖术、朱雀手、虎牙神拳、炼心轰、琉璃破、赤火圣腿、两仪步、菩萨妖隐、凌霄斧、翠羽印、醉仙神剑、不败斩、狂龙腿、极上劲、丹阳霸破、影月皇解、断浪龙印、金刚皇杀、青涛圣手、赤日枪\n" +
+            "\n" +
+            "吹雪拳、金阳咒、辟邪掌、暴雨解、摧心魔咒、白龙变、封喉变、沧海爪、黑虎掌、盖世轰、缠丝劈、玛瑙霸舞、鱼尾封、惊天咒、蝎王变、白日咒、蟠龙杀、旋锋皇术、虎魔舞、邪月霸咒、无痕皇吟、焚月皇术、夺心圣步、万魔隐、灵犀法、三阴圣腿、四象指、如意霸劈、暗黑圣刀、阴风闪、一炬法、无妄魔杀、烈日闪、霓霞皇枪、北斗妖腿、九转腿、十五圣轰、阴阳魔剑、问心手、惊雷皇指、翠羽魔隐、翔鹰爆、闪电雷、绝世魔斧、真龙佛手、凤舞霸破、缠心龙隐、无痕封、琉璃龙枪、森罗劲、太虚鬼术、梅花魔爪、光明掌、兽心雷、金刚神法、缠身霸吟、紫霄刀、飞蝎魔斩、天极舞、盘魂舞、赤焰刀、无双圣爪、蚀日圣劈、五彩舞、佛光爪\n" +
+            "\n" +
+            "血雨法、摧山佛闪、飞鹤圣术、烈爆、飞星拳、牡羊皇、白虎鬼术、癸水法、万军步、浑天霸劲、奇木爆、如来封、擎雷鬼剑、战狼雷、溷元皇印、无敌破、赤虹掌、灭神破、涅槃妖刀、巨灵佛变、断情咒、雁过鬼隐、相思手、除仙法、紫炎皇爆、九圣拳、一炬剑、妖灵枪、暗影隐、千百术、龙神剑、天极舞、离火腿、终极龙斩、倚月雷、惊天魔破、蚀骨斧、残阳神杀、碧落劲、截脉闪、菩提妖轰、倒海佛轰\n" +
+            "\n" +
+            "兽皇劲、丹霞妖变、风刃法、封穴魔掌、飞霜圣拳、流星刀、洛书斧、不灭斩、招邪刀、暴虎舞、羊脂妖拳、地煞劈、北斗斩、飘霜闪、罗刹破、无华魔闪、御虚剑、炼仙杀、炼妖妖破、玉蟾皇步、天仙神雷、龙捲刀、巨鲸佛斧、天外劈、炼狱腿、龙王佛术、明心劲、寒月封、掩月刀、琉璃神掌、玉鼎印、极阳佛劈、摧岳法、罗汉拳、绞肉霸法、炽隐、罗刹圣拳、断筋法、赤虎刀、菩萨佛破、金鐘劈、倒海咒、菩提妖爆、元阳吟、异筋妖杀、兽王掌、流星鬼破、太乙手、天武劲、凶灵舞、天罗皇腿、坎水龙吟、迷魂印、护体斧、缘生瘴、花雨鬼劲、琉光剑\n" +
+            "\n" +
+            "太虚腿、陀罗劈、缺月隐、天极隐、梵天封、震天法、蝎王刀、莲花妖劈、九幽剑、天音龙封、血雾鬼闪、极剑、庄严魔枪、世尊圣拳、战神鬼斧、神行妖术、孤风神术、龙凰圣劲、水柔佛指、残金鬼劲、链铠妖枪、沧海霸破、伏魔皇杀、流萤鬼闪、截空魔劈、花云霸腿、紫纹皇指、飞雪龙闪、遮那鬼手、丹青圣吟、百花圣枪、紫虚龙变、断岳鬼腿、绝叫皇腿、缺月妖闪、魔鬼拳、坠月魔破、水月鬼劲、腾云鬼斧、金乌妖斩、红莲妖舞、灵胥皇腿、极火神掌、须弥佛拳、天道皇爆、幽幻霸爪、仁风鬼手、巫盼皇劲、破浪妖斩、血魔妖劈\n" +
+            "\n" +
+            "游燕龙咒、秘纹鬼破、点星鬼指、骨片鬼劲、狼牙霸刀、流涂佛吟、六法妖舞、白日佛指、天问魔舞、鬼哭妖劲、雷烈佛舞、如来霸爪、掩日鬼掌、百丈妖斧、赤龙神掌、芙蓉妖隐、地灭妖杀、直传魔杀、啸风圣咒、灼阳霸枪、飞龙神劈、兽皇佛闪、极乐霸瘴、垂凤魔瘴、鱼翔妖吟、碎骨妖术、赤霄妖指、墨羽佛爆、圣火神掌、白光圣手、狂澜神枪、青花龙舞、极寒魔吟、延阳龙杀、雷霆龙破、达寂妖枪、东极佛掌、封穴皇拳、红莲霸术、点金圣斩、寒刺魔爪、浩然鬼术\n" +
+            "\n" +
+            "雷音扫霞幽图、闇雷幻波幽功、柔棉星象丹轴、金丝腾蛇灵书、天元红霞幻诀、月禅八石禁书、紫炎黄沙灵本、霹雳通神毒阵图、大衍火网丹法、兽王闇炎禁书、赤龙天浪仙图、龙牙银光灵功、万里蚀肉剑书、天海巨灵秘典、斩风苍雷鬼功、慾天玄光神阵图、兽面摧心神经、武曲万丈幽典、蛟龙玉女剑书、御魔葬海剑抄、碧月无痕真本、横练辟风灵诀、却邪神武禁法\n" +
+            "\n" +
+            "昭天虹彩圣卷、云丝灭世神抄、麾角千叶蛊诀、蝉翼武曲雷诀、月卷九鼎鬼录、豹爪花鸟禁录、龙捲百花玄功、血光幽泉蛊本、上清狼骨灵书、黛雪藏空鬼抄、初尘银光丹录、曜仙子午秘抄、仁风无痕蛊书、缠心情痴幻经、紫微乌金禁本、银环硬骨魅谱、霓霞天纹圣书、青霜赤霞妖本、七煞焚天禁法、白狼绿灵幽卷、真武葬海雷抄、寂灭青瑶霸典、斜纹银羽冥谱、童子清风蛊功、恩光龙吟禁典、斩情截脉霸经、断肠旋锋幻阵图、离恨勇力幻典、斩钢十绝冥阵图、红锦碎尸奇书、尊胜凝尊魅抄\n" +
+            "\n" +
+            "真传丹霞灵法、飞豹咆哮灵抄、方英冲霄丹抄、碧月梵天灵抄、达寂水镜奇阵图、变幻东极丹典、噬魂辟风圣谱、紫岳化清丹卷、绮罗锐铂幻典、御虚凶虎真图、赤凤承天禁经、自在碎肉妖功、风魔傲世秘功、绿灵天狼雷法、软底圣火鬼法、紫羽月洛魅法、银霜天钺霸书、文昌麒麟仙谱、醉吟仁王幽法、赤龙索命真阵图、翠虹飞仙圣抄、神武承云真经、无影孤星妖本、紫岳醉梦蛊抄、听月风霜妖典、极上圣龙妖书";
+    //得到一个hashmap，由韵母音节作为键，字符串集作为值
+    public static Map<String,HashSet<String>> jinglei()
+    {
+        //给一篇小说
+        String xiaoshuo = sss;
+        //建立一个hashmap，存放韵脚
+        Map<String,HashSet<String>> hashmap=new HashMap<>();
+        //将小说按照标点符号切割成无数字符串，成为字符串数组
+        String[] xiaoshuosplit = xiaoshuo.split("[\\pP\\p{Punct}]");
+        ArrayList<String> newlist = new ArrayList<>();
+        for (String xspd:xiaoshuosplit) {
+            xspd.trim();
+            //对每一个字符串数组做处理，取出最后一个字，并得到他的拼音
+            char c=xspd.charAt(xspd.length()-1);
+            //得到最后一个字的拼音
+            String[] pinyins = PinyinHelper.toHanyuPinyinStringArray(c);
+            if (pinyins.length == 0) break;
+            String pinyin = pinyins[0];
+
+            //从韵母表中依次取出韵母与这个拼音进行对比，若符合则放入hashmap
+            for (String s : yunmubiao) {
+                String rex = "[a-zA-Z]*" + s+"[0-9]*";
+                if (pinyin.matches(rex))
+                {
+                    //这里是难点，首先将set提取出来，再添加字符串，再覆盖原字典
+                    HashSet<String> orDefault = hashmap.getOrDefault(s, new HashSet<>());
+                    orDefault.add(xspd);
+                    hashmap.put(s,orDefault);
+                    break;
+                }
+            }
+        }
+        System.out.println(hashmap.size());
+        //遍历hashmap进行测试
+
+       return hashmap;
+    }
+    //随机从字典里取出对应的字符串，每个韵母音节在一句话中必须取两个
+    public static void geci()
+    {
+        Map<String,HashSet<String>> hashSetMap = leetcode.jinglei();
+        StringBuilder stringBuilder=new StringBuilder();
+        ArrayList<String> strings =new ArrayList<>();
+        for (String s : hashSetMap.keySet())
+        {
+            strings.add(s);
+        }
+        int mapsize= hashSetMap.size();
+        int mapsize2=0;
+        for (int i =0; i<10; i++)
+        {
+            mapsize2= (int) (mapsize*Math.random());
+
+            ArrayList<String> inner = new ArrayList<>(hashSetMap.get(strings.get(mapsize2)));
+
+            int x1= (int) (Math.random()*sss.length());
+            int x2= 1+(int) (Math.random()*3);
+            stringBuilder.append(sss.substring(x1,x1+x2));
+            stringBuilder.append(",");
+            for (int j = 0  ; j< 2+Math.random()*3;j++) {
+                String s = inner.get((int) (inner.size() * Math.random()));
+                stringBuilder.append(s);
+            }
+            stringBuilder.append("\n");
+
+        }
+        System.out.println(stringBuilder.toString());
+        leetcode.textToSpeech(stringBuilder.toString());
+    }
+
+    public static void textToSpeech(String text) {
+        ActiveXComponent ax = null;
+        try {
+            ax = new ActiveXComponent("Sapi.SpVoice");
+
+            // 运行时输出语音内容
+            Dispatch spVoice = ax.getObject();
+            // 音量 0-100
+            ax.setProperty("Volume", new Variant(100));
+            // 语音朗读速度 -10 到 +10
+            ax.setProperty("Rate", new Variant(+7));
+            // 执行朗读
+            Dispatch.call(spVoice, "Speak", new Variant(text));
+
+            // 下面是构建文件流把生成语音文件
+
+            ax = new ActiveXComponent("Sapi.SpFileStream");
+            Dispatch spFileStream = ax.getObject();
+
+            ax = new ActiveXComponent("Sapi.SpAudioFormat");
+            Dispatch spAudioFormat = ax.getObject();
+
+            // 设置音频流格式
+            Dispatch.put(spAudioFormat, "Type", new Variant(22));
+            // 设置文件输出流格式
+            Dispatch.putRef(spFileStream, "Format", spAudioFormat);
+            // 调用输出 文件流打开方法，创建一个.wav文件
+            Dispatch.call(spFileStream, "Open", new Variant("./text.wav"), new Variant(3), new Variant(true));
+            // 设置声音对象的音频输出流为输出文件对象
+            Dispatch.putRef(spVoice, "AudioOutputStream", spFileStream);
+            // 设置音量 0到100
+            Dispatch.put(spVoice, "Volume", new Variant(100));
+            // 设置朗读速度
+            Dispatch.put(spVoice, "Rate", new Variant(-2));
+            // 开始朗读
+            Dispatch.call(spVoice, "Speak", new Variant(text));
+
+            // 关闭输出文件
+            Dispatch.call(spFileStream, "Close");
+            Dispatch.putRef(spVoice, "AudioOutputStream", null);
+
+            spAudioFormat.safeRelease();
+            spFileStream.safeRelease();
+            spVoice.safeRelease();
+            ax.safeRelease();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public static void main(String[] args) {
+        //leetcode.splittext("撒酒疯撒打飞机了三分,大范..德,。。萨发士大夫，");
+        String rex = "[a-zA-Z]*" + "en"+"[0-9]*";
+        leetcode.geci();
+    }
+    }
+    
